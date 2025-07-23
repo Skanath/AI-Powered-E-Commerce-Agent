@@ -2,9 +2,9 @@ import requests
 
 def question_to_sql(question):
     prompt = f"""
-You are an assistant that writes SQL SELECT queries for an e-commerce SQLite database.
+You are an AI assistant that converts natural language into safe SQL SELECT queries for an e-commerce SQLite database.
 
-Available tables and columns:
+Use only the following tables and their columns:
 
 1. ad_sales
    - date, item_id, ad_sales, impressions, ad_spend, clicks, units_sold
@@ -15,17 +15,27 @@ Available tables and columns:
 3. eligibility
    - eligibility_datetime_utc, item_id, eligibility, message
 
-Write only valid SQL SELECT queries using these columns.
-Avoid JOINs unless necessary.
-Return only the SQL. Do not explain.
+Rules:
+- Output only a valid SQL SELECT query.
+- Always use COALESCE(column, 0) to handle NULL values.
+- Always use NULLIF(x, 0) in divisions to avoid division by zero.
+- Avoid JOINs unless necessary.
+- If the question asks for the "highest", "maximum", or "top" record, use ORDER BY and LIMIT 1.
+- Never explain the SQL or add comments. Only output the SQL code.
 
 Question: {question}
 """
 
-
-
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={"model": "llama3", "prompt": prompt, "stream": False}
-    )
-    return response.json()["response"].strip()
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "llama3",
+                "prompt": prompt,
+                "stream": False
+            }
+        )
+        response.raise_for_status()
+        return response.json().get("response", "").strip()
+    except Exception as e:
+        return f"-- LLM error: {e}"
