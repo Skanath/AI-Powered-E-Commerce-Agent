@@ -10,5 +10,5 @@ This project converts text based questions into SQL queries and retrieves data f
 
 4. Launch the Flask server using main.py. It connects the web interface with the database and the language model, and handles user input.
 
-5. Open http://127.0.0.1:5000 in your browser to ask questions in plain English. The AI will convert them into SQL, run the query, and show the result with charts if applicable.
+5. Open localhost in your browser to ask questions in plain English. The AI will convert them into SQL, run the query, and show the result with charts if applicable.
 
