@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI-Powered E-commerce Agent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h1> AI-Powered E-commerce Assistant</h1>
+    <p><em>Built with Flask, Llama3, SQLite & Charts</em></p>
+    <form method="POST">
+        <input type="text" name="question" placeholder="Ask a question..." required>
+        <button type="submit">Ask</button>
+    </form>
+
+    {% if question %}
+        <h3>Your Question:</h3>
+        <p>{{ question }}</p>
+        <h3> SQL Query:</h3>
+        <pre class="typewriter">{{ sql_query }}</pre>
+
+        {% if response %}
+            <h3> Result:</h3>
+            {% if response[0] is string %}
+                <p>{{ response[0] }}</p>
+            {% else %}
+            <table>
+                <tr>{% for col in response[0].keys() %}<th>{{ col }}</th>{% endfor %}</tr>
+                {% for row in response %}
+                <tr>{% for cell in row.values() %}<td>{{ cell }}</td>{% endfor %}</tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        {% endif %}
+
+        {% if chart_url %}
+            <h3> Chart:</h3>
+            <img src="{{ chart_url }}" width="600px">
+        {% endif %}
+    {% endif %}
+</div>
+</body>
+</html>
